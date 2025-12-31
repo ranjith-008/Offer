@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Videos | Tick My Bus</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --burgundy: #e52023cc;
+            --accent-red: #e52023;
+            --text-dark: #1a1a1b;
+            --text-muted: #6b7280;
+            --white: #ffffff;
+            --gray-light: #f8f9fa;
+            --gray-border: #eef1f4;
+            --shadow-premium: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f3f6;
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: var(--accent-red);
+        }
+
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .video-item {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-premium);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--gray-border);
+        }
+
+        .video-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .video-icon {
+            width: 50px;
+            height: 50px;
+            background: #fef2f2;
+            color: var(--accent-red);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .video-details h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .video-details p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delete-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 16px;
+            border: 1px dashed var(--text-muted);
+            color: var(--text-muted);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: var(--gray-light);
+            color: var(--text-dark);
+        }
+
+        .btn-confirm {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Manage Videos</h1>
+            <a href="/owner" class="back-btn"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert {{ 'alert-success' if category == 'success' else 'alert-danger' }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="video-list">
+            {% if videos %}
+            {% for video in videos %}
+            <div class="video-item">
+                <div class="video-info">
+                    <div class="video-icon"><i class="fas fa-video"></i></div>
+                    <div class="video-details">
+                        <h3>{{ video.filename }}</h3>
+                        <p>Uploaded on {{ video.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+                </div>
+                <button class="delete-btn" onclick="showDeleteModal('{{ video.id }}', '{{ video.filename }}')">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-film fa-3x" style="margin-bottom: 15px; opacity: 0.3;"></i>
+                <p>No videos uploaded yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <i class="fas fa-exclamation-triangle fa-3x" style="color: #ef4444; margin-bottom: 15px;"></i>
+            <h2>Are you sure?</h2>
+            <p style="color: var(--text-muted); margin-top: 10px;">You are about to delete <span id="videoName"
+                    style="color: var(--text-dark); font-weight: 700;"></span>. This action cannot be undone.</p>
+
+            <form id="deleteForm" method="POST" autocomplete="off">
+                <input type="password" name="admin_key" placeholder="Enter Admin Secret Key" required autofocus
+                    style="width: 100%; padding: 12px; margin-top: 15px; border-radius: 8px; border: 1px solid var(--gray-border);">
+                <div class="modal-btns">
+                    <button type="button" class="btn btn-cancel" onclick="hideDeleteModal()">Cancel</button>
+                    <button type="submit" class="btn btn-confirm">Delete Forever</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showDeleteModal(id, name) {
+            document.getElementById('videoName').innerText = name;
+            document.getElementById('deleteForm').action = '/delete-video/' + id;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('deleteModal')) {
+                hideDeleteModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

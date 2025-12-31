@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Bus & Seat Prices</title>
+</head>
+<body>
+
+<h2>Add Bus Details</h2>
+
+<form method="POST">
+
+    <!-- BUS DETAILS -->
+    Bus Name:
+    <input type="text" name="bus_name" required><br><br>
+
+    Bus Type:
+    <input type="text" name="bus_type" required><br><br>
+
+    From:
+    <input type="text" name="from_location" required><br><br>
+
+    To:
+    <input type="text" name="to_location" required><br><br>
+
+    Journey Date:
+    <input type="date" name="journey_date" required><br><br>
+
+    Start Time:
+    <input type="time" name="start_time" required><br><br>
+
+    Reach Time:
+    <input type="time" name="reach_time" required><br><br>
+
+    <hr>
+
+    <!-- SEAT PRICES -->
+    <h3>Seat Prices</h3>
+
+    USS Price:
+    <input type="number" name="price_USS"><br><br>
+
+    LSS Price:
+    <input type="number" name="price_LSS"><br><br>
+
+    UDS Price:
+    <input type="number" name="price_UDS"><br><br>
+
+    LDS Price:
+    <input type="number" name="price_LDS"><br><br>
+
+    SS Price:
+    <input type="number" name="price_SS"><br><br>
+
+    <button type="submit">Save Bus & Seats</button>
+
+</form>
+
+</body>
+</html>

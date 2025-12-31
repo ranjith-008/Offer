@@ -1,0 +1,340 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Brand Colors - MATCHING LOGO RED */
+    --primary: #dc2626;
+    /* Red-600 */
+    --primary-dark: #b91c1c;
+    --accent: #f59e0b;
+    /* Amber/Yellow for contrast */
+
+    /* Functional Colors */
+    --bg-body: #f3f4f6;
+    /* Light Gray */
+    --bg-card: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --success: #10b981;
+    --danger: #ef4444;
+
+    /* Spacing & Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Resets & Base --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+}
+
+ul {
+    list-style: none;
+}
+
+/* --- Layout --- */
+.container {
+    max-width: 1000px;
+    /* Narrower for 'Simple' focus */
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+}
+
+header {
+    background: var(--primary);
+    /* Full Red Header */
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.logo img {
+    height: 45px;
+    filter: brightness(0) invert(1);
+    /* Make logo white if it's transparent, or just show as is */
+    object-fit: contain;
+}
+
+.nav-link {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+main {
+    flex: 1;
+    padding: 40px 0;
+}
+
+/* --- Components --- */
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Ticket Card - Redesigned for Simplicity */
+.ticket-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    overflow: hidden;
+    margin-bottom: 25px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Updated Flash Animation */
+@keyframes glowingUpdate {
+    0% {
+        box-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent);
+        border-color: var(--accent);
+        transform: scale(1.02);
+    }
+
+    50% {
+        box-shadow: 0 0 20px var(--accent), 0 0 30px var(--accent);
+        border-color: var(--accent);
+        transform: scale(1.02);
+    }
+
+    100% {
+        box-shadow: var(--shadow-card);
+        border-color: var(--border);
+        transform: scale(1);
+    }
+}
+
+.updated-flash {
+    animation: glowingUpdate 1.5s ease-out;
+    z-index: 10;
+}
+
+.ticket-left {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ticket-right {
+    background: #fef2f2;
+    /* Light Red tint */
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-left: 2px dashed #fecaca;
+    padding: 20px;
+    position: relative;
+}
+
+/* Holes for Ticket Effect */
+.ticket-right::before,
+.ticket-right::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    width: 20px;
+    height: 20px;
+    background: var(--bg-body);
+    border-radius: 50%;
+}
+
+.ticket-right::before {
+    top: -10px;
+}
+
+.ticket-right::after {
+    bottom: -10px;
+}
+
+
+/* Specifics */
+.bus-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-right: 10px;
+}
+
+.bus-badge {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.route-row {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+.time-loc h4 {
+    font-size: 1.5rem;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.time-loc span {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.duration-line {
+    flex: 1;
+    border-bottom: 2px dotted #d1d5db;
+    position: relative;
+    height: 2px;
+}
+
+.duration-line i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-card);
+    padding: 0 10px;
+    color: var(--primary);
+}
+
+.price-display {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.start-from {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+    .ticket-card {
+        grid-template-columns: 1fr;
+    }
+
+    .ticket-right {
+        width: 100%;
+        border-left: none;
+        border-top: 2px dashed #fecaca;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 15px 24px;
+    }
+
+    .ticket-right::before,
+    .ticket-right::after {
+        display: none;
+    }
+
+    .route-row {
+        gap: 15px;
+    }
+
+    .time-loc h4 {
+        font-size: 1.2rem;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Flash Messages --- */
+.alert {
+    padding: 15px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}

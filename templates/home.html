@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard | Tick My Bus</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo.png') }}">
+    <style>
+        :root {
+            --burgundy: #e52023cc;
+            --burgundy-light: #e52023cc;
+            --burgundy-dark: #e52023cc;
+            --gray-light: #f8f9fa;
+            --gray-border: #eef1f4;
+            --text-dark: #1a1a1b;
+            --text-muted: #6b7280;
+            --accent-red: #e52023;
+            --white: #ffffff;
+            --shadow-premium: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f3f6;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Branding Header */
+        header {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .public-btn {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 2px solid var(--gray-border);
+            transition: all 0.2s;
+        }
+
+        .public-btn:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--accent-red) 100%);
+            padding: 80px 0;
+            color: white;
+            text-align: center;
+            margin-bottom: -60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-premium);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0);
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-red);
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+
+        .card-1 .icon-circle {
+            background: #fee2e2;
+            color: var(--accent-red);
+        }
+
+        .card-2 .icon-circle {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .card-3 .icon-circle {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .action-card:hover .icon-circle {
+            transform: scale(1.1);
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .card-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .card-1 .card-btn {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .card-2 .card-btn {
+            background: var(--text-dark);
+            color: white;
+        }
+
+        .card-3 .card-btn {
+            background: #16a34a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .action-card:hover .card-btn {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tick My Bus">
+            </div>
+            <div class="nav-links">
+                <a href="/" class="public-btn">
+                    <i class="fas fa-external-link-alt"></i> View Public Site
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Owner Dashboard</h1>
+            <p class="hero-subtitle">Manage your fleet, update schedules, and drive more bookings with live offers.</p>
+        </div>
+    </div>
+
+    <main class="dashboard-container">
+        <!-- Add Bus Card -->
+        <a href="/add-bus" class="action-card card-1">
+            <div class="icon-circle">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <h2 class="card-title">Add New Journey</h2>
+            <p class="card-desc">Create a new service, set routes, and define seat pricing to go live instantly.</p>
+            <div class="card-btn">Launch Offer</div>
+        </a>
+
+        <!-- Manage Fleet Card -->
+        <a href="/buses/" class="action-card card-2">
+            <div class="icon-circle">
+                <i class="fas fa-list-ul"></i>
+            </div>
+            <h2 class="card-title">Manage Fleet</h2>
+            <p class="card-desc">Review your active schedules, edit details, or remove cancelled trips in one click.</p>
+            <div class="card-btn">Manage All</div>
+        </a>
+
+        <!-- Upload Video Card -->
+        <div class="action-card card-3">
+            <div class="icon-circle">
+                <i class="fas fa-video"></i>
+            </div>
+            <h2 class="card-title">Promotional Video</h2>
+            <p class="card-desc">Upload a video to autoplay on the main page. Best for offers and announcements.</p>
+
+            <form action="/upload-video" method="POST" enctype="multipart/form-data" style="width: 100%;"
+                autocomplete="off">
+                <input type="file" name="video" accept="video/*" required
+                    style="margin-bottom: 15px; width: 100%; font-size: 0.8rem;">
+                <input type="password" name="admin_key" placeholder="Admin Secret Key" required
+                    style="margin-bottom: 15px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--gray-border);">
+                <button type="submit" class="card-btn" style="margin-bottom: 10px;">Upload Video</button>
+            </form>
+            <a href="/manage-videos"
+                style="font-size: 0.85rem; color: var(--text-muted); text-decoration: none; font-weight: 600;">
+                <i class="fas fa-cog"></i> Manage Uploads
+            </a>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">
+        &copy; 2024 Tick My Bus | Owner Administration Panel
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

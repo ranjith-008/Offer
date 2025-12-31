@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Journey | Tick My Bus</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/log2.jfif') }}">
+    <style>
+        :root {
+            --burgundy: #e52023cc;
+            --burgundy-light: #e52023cc;
+            --burgundy-dark: #e52023cc;
+            --gray-light: #f8f9fa;
+            --gray-border: #eef1f4;
+            --text-dark: #1a1a1b;
+            --text-muted: #6b7280;
+            --accent-red: #e52023;
+            --white: #ffffff;
+            --shadow-premium: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f3f6;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--burgundy);
+            padding: 1rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 60px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 50px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-btn.cancel {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .page-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 2px solid var(--gray-border);
+            background: var(--gray-light);
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-red);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(229, 32, 35, 0.1);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+        }
+
+        /* Preview Sidebar */
+        .preview-sticky {
+            position: sticky;
+            top: 120px;
+        }
+
+        .preview-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .preview-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-border);
+        }
+
+        /* Ticket Card Copy */
+        .ticket-card {
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-premium);
+            position: relative;
+            padding: 24px;
+            transition: all 0.3s;
+            border: 1px solid var(--gray-border);
+        }
+
+        .ticket-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 30%;
+            bottom: 30%;
+            width: 5px;
+            background: var(--accent-red);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .route-info {
+            flex: 1;
+        }
+
+        .start-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            display: block;
+        }
+
+        .price-main {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            margin-bottom: 8px;
+        }
+
+        .time-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 12px 0;
+            border-top: 1px dashed var(--gray-border);
+            border-bottom: 1px dashed var(--gray-border);
+        }
+
+        .time-box {
+            text-align: center;
+        }
+
+        .time-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .timeline {
+            flex: 1;
+            margin: 0 15px;
+            height: 1px;
+            background: var(--gray-border);
+            position: relative;
+        }
+
+        .timeline::after {
+            content: '\f1b9';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 0 8px;
+            color: var(--accent-red);
+            font-size: 0.8rem;
+        }
+
+        .price-label-row {
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin: 15px 0 8px;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .price-label-row::after,
+        .price-label-row::before {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-border);
+        }
+
+        .price-grid {
+            display: grid;
+            border: 1px solid var(--gray-border);
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .grid-cell {
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 0.75rem;
+            border-right: 1px solid var(--gray-border);
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .grid-cell:last-child {
+            border-right: none;
+        }
+
+        .cell-type {
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--gray-light);
+        }
+
+        .cell-value {
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .bus-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--gray-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-red);
+            font-size: 1.2rem;
+            border: 1px solid var(--gray-border);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Seat Legend */
+        .seat-legend {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: flex-start;
+            border: 1px solid var(--gray-border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .legend-code {
+            background: var(--gray-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent-red);
+            font-weight: 800;
+            border: 1px solid var(--gray-border);
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-sticky {
+                position: static;
+                margin-top: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navbar">
+            <a href="/owner" class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tick My Bus">
+            </a>
+            <div class="nav-links">
+                <a href="/buses/" class="nav-btn cancel">Cancel Changes</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="form-section">
+            <h1 class="page-title">Edit Journey</h1>
+            <p class="page-subtitle">Update route details and modify seat pricing for this service.</p>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert fade-in">
+                <i class="fas fa-exclamation-circle"></i> {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" autocomplete="off">
+                <div class="form-group">
+                    <label class="form-label">Confirm Admin Key</label>
+                    <input type="password" name="admin_key" class="form-control" placeholder="Required to save changes"
+                        required>
+                </div>
+
+                <div class="form-group" style="margin-top: 30px;">
+                    <label class="form-label">Bus Name</label>
+                    <input type="text" name="bus_name" id="inp_bus_name" class="form-control" value="{{ bus.bus_name }}"
+                        required oninput="updatePreview()">
+                </div>
+
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label class="form-label">Service Type</label>
+                        <select name="bus_type" id="inp_bus_type" class="form-control" required
+                            onchange="updatePreview()">
+                            <option value="AC Sleeper" {% if bus.bus_type=='AC Sleeper' %}selected{% endif %}>AC Sleeper
+                            </option>
+                            <option value="Non-AC Sleeper" {% if bus.bus_type=='Non-AC Sleeper' %}selected{% endif %}>
+                                Non-AC Sleeper</option>
+                            <option value="AC Seater" {% if bus.bus_type=='AC Seater' %}selected{% endif %}>AC Seater
+                            </option>
+                            <option value="Non-AC Seater" {% if bus.bus_type=='Non-AC Seater' %}selected{% endif %}>
+                                Non-AC Seater</option>
+                            <option value="AC Seater Cum Sleeper" {% if bus.bus_type=='AC Seater Cum Sleeper'
+                                %}selected{% endif %}>AC Seater Cum Sleeper</option>
+                            <option value="Non-AC Seater Cum Sleeper" {% if bus.bus_type=='Non-AC Seater Cum Sleeper'
+                                %}selected{% endif %}>Non-AC Seater Cum Sleeper</option>
+                            <option value="AC Semi-Sleeper" {% if bus.bus_type=='AC Semi-Sleeper' %}selected{% endif %}>
+                                AC Semi-Sleeper</option>
+                            <option value="Non-AC Semi-Sleeper" {% if bus.bus_type=='Non-AC Semi-Sleeper' %}selected{%
+                                endif %}>Non-AC Semi-Sleeper</option>
+                            <option value="Multi-Axle AC Sleeper" {% if bus.bus_type=='Multi-Axle AC Sleeper'
+                                %}selected{% endif %}>Multi-Axle AC Sleeper</option>
+                            <option value="Multi-Axle AC Semi-Sleeper" {% if bus.bus_type=='Multi-Axle AC Semi-Sleeper'
+                                %}selected{% endif %}>Multi-Axle AC Semi-Sleeper</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Travel Date</label>
+                        <input type="date" name="journey_date" id="inp_date" class="form-control"
+                            value="{{ bus.journey_date }}" required oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label class="form-label">Departure</label>
+                        <input type="text" name="from_location" id="inp_from" class="form-control"
+                            value="{{ bus.from_location }}" required oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Arrival</label>
+                        <input type="text" name="to_location" id="inp_to" class="form-control"
+                            value="{{ bus.to_location }}" required oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label class="form-label">Departure Time</label>
+                        <input type="time" name="start_time" id="inp_start" class="form-control"
+                            value="{{ bus.start_time.strftime('%H:%M') if bus.start_time else '' }}" required
+                            oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Arrival Time</label>
+                        <input type="time" name="reach_time" id="inp_reach" class="form-control"
+                            value="{{ bus.reach_time.strftime('%H:%M') if bus.reach_time else '' }}" required
+                            oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <div class="price-label-row" style="margin-top: 30px;">MODIFY SEAT PRICING (INR)</div>
+
+                <!-- Seat Legend Section -->
+                <div class="seat-legend">
+                    <div class="legend-item">
+                        <span class="legend-code">USS</span>
+                        <span>Upper Single Sleeper</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-code">LSS</span>
+                        <span>Lower Single Sleeper</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-code">UDS</span>
+                        <span>Upper Double Sleeper</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-code">LDS</span>
+                        <span>Lower Double Sleeper</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-code">SS</span>
+                        <span>Semi Sleeper</span>
+                    </div>
+                </div>
+
+                <div class="input-grid" style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));">
+                    {% for seat in seats %}
+                    <div class="form-group">
+                        <label class="form-label">{{ seat.seat_type }}</label>
+                        <input type="number" name="price_{{ seat.id }}" id="p_{{ seat.seat_type|lower }}"
+                            class="form-control" value="{{ seat.price }}" oninput="updatePreview()">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="submit-btn" style="background: var(--accent-red);">
+                    <i class="fas fa-save"></i> Commit Changes
+                </button>
+            </form>
+        </section>
+
+        <aside class="preview-sticky">
+            <div class="preview-header">Updated Card Preview</div>
+
+            <div class="ticket-card" id="preview-card">
+                <div class="card-header">
+                    <div class="route-info">
+                        <span class="start-label">STARTING FROM</span>
+                        <div class="price-main" id="prev_min_price">₹0</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
+                            <i class="far fa-calendar-alt"></i> <span id="prev_date">Date</span>
+                        </div>
+                    </div>
+                    <div class="bus-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                </div>
+
+                <div class="time-row">
+                    <div class="time-box">
+                        <span class="time-label">Departure</span>
+                        <span class="time-val" id="prev_start">--:--</span>
+                        <span class="time-label" id="prev_from">From</span>
+                    </div>
+                    <div class="timeline"></div>
+                    <div class="time-box">
+                        <span class="time-label">Arrival</span>
+                        <span class="time-val" id="prev_reach">--:--</span>
+                        <span class="time-label" id="prev_to">To</span>
+                    </div>
+                </div>
+
+                <div class="price-label-row">LIVE PRICE GRID</div>
+                <div id="prev_price_grid" class="price-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <!-- Cells injected by JS -->
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 20px; padding: 20px; background: #fff7ed; border-radius: 15px; border: 1px solid #ffedd5; color: #9a3412; font-size: 0.85rem; font-weight: 600;">
+                <i class="fas fa-sync-alt"></i> Changes made here are reflected in real-time. Confirm the admin key to
+                save permanently.
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        function updatePreview() {
+            // Basic Info
+            const name = document.getElementById('inp_bus_name').value;
+            const date = document.getElementById('inp_date').value;
+            const from = document.getElementById('inp_from').value;
+            const to = document.getElementById('inp_to').value;
+            const start = document.getElementById('inp_start').value;
+            const reach = document.getElementById('inp_reach').value;
+
+            document.getElementById('prev_date').innerText = date;
+            document.getElementById('prev_from').innerText = from;
+            document.getElementById('prev_to').innerText = to;
+            document.getElementById('prev_start').innerText = start.slice(0, 5);
+            document.getElementById('prev_reach').innerText = reach.slice(0, 5);
+
+            // Seat Prices
+            const seatTypes = ['USS', 'LSS', 'UDS', 'LDS', 'SS'];
+            const activeSeats = [];
+            let minPrice = Infinity;
+
+            seatTypes.forEach(type => {
+                const el = document.getElementById('p_' + type.toLowerCase());
+                if (el) {
+                    const val = parseInt(el.value) || 0;
+                    if (val > 0) {
+                        activeSeats.push({ type, price: val });
+                        if (val < minPrice) minPrice = val;
+                    }
+                }
+            });
+
+            if (minPrice === Infinity) minPrice = 0;
+            document.getElementById('prev_min_price').innerText = '₹' + minPrice;
+
+            // Update Grid
+            const grid = document.getElementById('prev_price_grid');
+            const colCount = activeSeats.length || 1;
+            grid.style.gridTemplateColumns = `repeat(${colCount}, 1fr)`;
+
+            let typeRow = '';
+            let valRow = '';
+
+            if (activeSeats.length === 0) {
+                typeRow = '<div class="grid-cell cell-type" style="border-right:none">-</div>';
+                valRow = '<div class="grid-cell cell-value" style="border-right:none; border-bottom:none">-</div>';
+            } else {
+                activeSeats.forEach((s, idx) => {
+                    const isLast = idx === activeSeats.length - 1;
+                    const border = isLast ? 'style="border-right:none"' : '';
+                    typeRow += `<div class="grid-cell cell-type" ${border}>${s.type}</div>`;
+                    valRow += `<div class="grid-cell cell-value" ${border} style="${isLast ? 'border-right:none;' : ''} border-bottom:none">₹${s.price}</div>`;
+                });
+            }
+
+            grid.innerHTML = typeRow + valRow;
+        }
+
+        // Initialize
+        updatePreview();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Offers | Tick My Bus</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo.png') }}">
+    <style>
+        :root {
+            --burgundy: #e52023cc;
+            --burgundy-light: #e52023cc;
+            --burgundy-dark: #e52023cc;
+            --gray-light: #f8f9fa;
+            --gray-border: #eef1f4;
+            --text-dark: #1a1a1b;
+            --text-muted: #6b7280;
+            --accent-red: #cc2124;
+            --white: #ffffff;
+            --shadow-premium: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f3f6;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Premium Header */
+        header {
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 50%, var(--burgundy-dark) 100%);
+            padding: 0.8rem 0;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.4rem;
+            color: #fff;
+            opacity: 0.9;
+        }
+
+        .tagline {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            font-family: 'Outfit', sans-serif;
+            white-space: nowrap;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .tagline {
+                display: none;
+            }
+        }
+
+        .live-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 50px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .live-pulse {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
+            }
+
+            100% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
+        }
+
+        /* Video Player */
+        .video-container {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+            overflow: hidden;
+            border-radius: 24px;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            background: #000;
+            line-height: 0;
+            box-shadow: var(--shadow-premium);
+            border: 1px solid var(--gray-border);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            max-height: 280px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .volume-control {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s;
+        }
+
+        .volume-control:hover {
+            background: var(--accent-red);
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 15px auto;
+            padding: 0 15px;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                display: flex;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            #bus-grid {
+                flex: 2;
+            }
+
+            .video-container {
+                flex: 1;
+                margin-top: 0 !important;
+                position: sticky;
+                top: 15px;
+            }
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        /* Ticket Card */
+        .ticket-card {
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-premium);
+            position: relative;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--gray-border);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 250px;
+            justify-content: space-between;
+        }
+
+        .ticket-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 30%;
+            bottom: 30%;
+            width: 5px;
+            background: var(--accent-red);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .route-info {
+            flex: 1;
+        }
+
+        .start-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+            display: block;
+        }
+
+        .price-main {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            margin-bottom: 8px;
+        }
+
+        /* Time Row Styling */
+        .time-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 12px 0;
+            border-top: 1px dashed var(--gray-border);
+            border-bottom: 1px dashed var(--gray-border);
+        }
+
+        .time-box {
+            text-align: center;
+        }
+
+        .time-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .timeline {
+            flex: 1;
+            margin: 0 15px;
+            height: 1px;
+            background: var(--gray-border);
+            position: relative;
+        }
+
+        .timeline::after {
+            content: '\f1b9';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 0 8px;
+            color: var(--accent-red);
+            font-size: 0.8rem;
+        }
+
+        .route-path {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-top: 10px;
+        }
+
+        .route-path i {
+            color: var(--accent-red);
+            font-size: 0.7rem;
+        }
+
+        .bus-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-red);
+            font-size: 1.1rem;
+            border: 1px solid var(--gray-border);
+        }
+
+        .route-display {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            background: var(--gray-light);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--gray-border);
+        }
+
+        .route-display i,
+        .route-separator {
+            color: var(--accent-red);
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .price-range {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-label-mini {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Price Grid Table */
+        .price-label-row {
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin: 15px 0 8px;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .price-label-row::after,
+        .price-label-row::before {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-border);
+        }
+
+        .price-grid {
+            display: grid;
+            border: 1px solid var(--gray-border);
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .grid-cell {
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 0.75rem;
+            border-right: 1px solid var(--gray-border);
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .grid-cell:last-child {
+            border-right: none;
+        }
+
+        .cell-type {
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--gray-light);
+        }
+
+        .cell-value {
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        /* Seat Legend */
+        .seat-legend {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            border: 1px solid var(--gray-border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .legend-code {
+            background: var(--gray-light);
+            padding: 2px 8px;
+            border-radius: 6px;
+            color: var(--accent-red);
+            font-weight: 800;
+            border: 1px solid var(--gray-border);
+            font-size: 0.75rem;
+        }
+
+        /* Booking Footer Bar */
+        .booking-footer-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            width: auto;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 25px;
+            border-radius: 60px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .booking-label {
+            display: flex;
+            flex-direction: column;
+            white-space: nowrap;
+        }
+
+        .label-top {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .label-main {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            height: 48px;
+            padding: 0 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .btn-call {
+            background: var(--burgundy);
+            color: white;
+            box-shadow: 0 5px 15px rgba(229, 32, 35, 0.3);
+        }
+
+        .btn-call:hover {
+            background: var(--accent-red);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(229, 32, 35, 0.4);
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: white;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background: #22c35e;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            border: 2px solid white;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .booking-footer-bar {
+                width: 95%;
+                padding: 10px 15px;
+                gap: 10px;
+                bottom: 20px;
+            }
+
+            .label-main {
+                font-size: 0.85rem;
+            }
+
+            .action-btn {
+                padding: 0 12px;
+                height: 42px;
+                font-size: 0.8rem;
+            }
+
+            .btn-text {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo-group">
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tick My Bus"
+                        style="height: 45px; width: auto;">
+                </a>
+            </div>
+            <span class="tagline">Tick My Bus – Hot Bus Offers</span>
+            <div class="live-badge">
+                <div class="live-pulse"></div>
+                <span>LIVE OFFERS</span>
+            </div>
+        </div>
+    </header>
+
+
+
+    <main class="main-content">
+        <!-- Seat Legend Section Removed for Single Screen View -->
+
+        <div id="bus-grid" class="grid-container">
+            <div style="text-align:center; grid-column: 1/-1; padding: 50px 0;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--burgundy); opacity: 0.3;"></i>
+                <p
+                    style="margin-top:15px; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; font-size: 0.8rem;">
+                    SYNCING OFFERS...</p>
+            </div>
+        </div>
+
+        {% if videos %}
+        <div class="video-container" style="margin-top: 0px; display: flex; flex-direction: column; gap: 20px;">
+            {% for video in videos %}
+            <div class="video-wrapper"
+                style="position: relative; border-radius: 20px; box-shadow: var(--shadow-premium);">
+                <video class="promo-video" autoplay muted loop playsinline onclick="toggleMute(this)">
+                    <source src="{{ url_for('static', filename='videos/' + video.filename) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="volume-control" onclick="toggleMute(this.previousElementSibling)"
+                    style="width: 40px; height: 40px; font-size: 1rem;">
+                    <i class="fas fa-volume-mute"></i>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Impressive Booking Bar -->
+    <div class="booking-footer-bar">
+        <div class="booking-label">
+            <span class="label-top">Enquiry Now</span>
+            <span class="label-main">90927-48488</span>
+        </div>
+        <div class="contact-actions">
+            <a href="tel:9092748488" class="action-btn btn-call">
+                <i class="fas fa-phone-alt"></i>
+                <span class="btn-text">Call Now</span>
+            </a>
+            <a href="https://wa.me/919092748488" class="action-btn btn-whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+                <span class="btn-text">WhatsApp</span>
+                <div class="status-dot"></div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let previousData = {};
+
+        async function fetchUpdates() {
+            try {
+                const response = await fetch('/api/buses');
+                const buses = await response.json();
+                renderBuses(buses);
+            } catch (error) {
+                console.error('Update failed:', error);
+            }
+        }
+
+        function renderBuses(buses) {
+            const container = document.getElementById('bus-grid');
+            let html = '';
+
+            buses.forEach(bus => {
+                const seats = (bus.seats || []).filter(s => s.price > 0);
+                const currentMin = bus.min_price || 0;
+                const currentMax = seats.length > 0 ? Math.max(...seats.map(s => s.price)) : currentMin;
+
+                const priceChanged = previousData[bus.id] && previousData[bus.id] !== `${currentMin}-${currentMax}`;
+                const flashClass = priceChanged ? 'price-flash' : '';
+                previousData[bus.id] = `${currentMin}-${currentMax}`;
+
+                html += `
+                    <div class="ticket-card" id="bus-${bus.id}">
+                        <div class="card-header">
+                            <div class="bus-info">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 2px;">
+                                    ${bus.bus_type}
+                                </div>
+                                <div style="font-size: 0.7rem; color: var(--accent-red); font-weight: 600;">
+                                    <i class="far fa-calendar-alt"></i> ${bus.journey_date}
+                                </div>
+                            </div>
+                            <div class="bus-icon">
+                                <i class="fas fa-bus-alt"></i>
+                            </div>
+                        </div>
+
+                        <div class="route-display">
+                            <span>${bus.from_location}</span>
+                            <span class="route-separator">TO</span>
+                            <span>${bus.to_location}</span>
+                        </div>
+
+                        <div class="price-info">
+                            <span class="price-label-mini">OFFER PRICE RANGE</span>
+                            <div class="price-range ${flashClass}">
+                                <span>₹${currentMin}</span>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">to</span>
+                                <span>₹${currentMax}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleMute(video) {
+            const btn = video.nextElementSibling;
+            const icon = btn.querySelector('i');
+
+            if (video.muted) {
+                video.muted = false;
+                icon.className = 'fas fa-volume-up';
+                btn.style.background = 'var(--accent-red)';
+            } else {
+                video.muted = true;
+                icon.className = 'fas fa-volume-mute';
+                btn.style.background = 'rgba(0, 0, 0, 0.6)';
+            }
+        }
+
+        fetchUpdates();
+        setInterval(fetchUpdates, 30000);
+    </script>
+</body>
+
+</html>
