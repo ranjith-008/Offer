@@ -50,7 +50,8 @@ def add_bus():
             to_location=request.form['to_location'],
             journey_date=request.form['journey_date'],
             start_time=request.form['start_time'],
-            reach_time=request.form['reach_time']
+            reach_time=request.form['reach_time'],
+            booked_seats=request.form.get('booked_seats', 0)
         )
         db.session.add(bus)
         db.session.commit()   # VERY IMPORTANT
@@ -100,6 +101,7 @@ def edit_bus(id):
         bus.journey_date = request.form['journey_date']
         bus.start_time = request.form['start_time']
         bus.reach_time = request.form['reach_time']
+        bus.booked_seats = request.form.get('booked_seats', 0)
 
         # update seat prices
         for seat in seats:
@@ -234,6 +236,7 @@ def api_buses():
             'journey_date': str(bus.journey_date),
             'start_time': str(bus.start_time),
             'reach_time': str(bus.reach_time),
+            'booked_seats': bus.booked_seats,
             'seats': seats,
             'min_price': seats[0]['price'] if seats else 0
         })

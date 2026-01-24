@@ -13,6 +13,7 @@ class Bus(db.Model):
     journey_date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
     reach_time = db.Column(db.Time, nullable=False)
+    booked_seats = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     seats = db.relationship('BusSeat', backref='bus', cascade="all, delete")

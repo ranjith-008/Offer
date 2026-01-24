@@ -12,14 +12,14 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo.png') }}">
     <style>
         :root {
-            --burgundy: #e52023cc;
+            --burgundy: #e52020cc;
             --burgundy-light: #e52023cc;
             --burgundy-dark: #e52023cc;
             --gray-light: #f8f9fa;
             --gray-border: #eef1f4;
             --text-dark: #1a1a1b;
             --text-muted: #6b7280;
-            --accent-red: #e52023;
+            --accent-red: #cc2124;
             --white: #ffffff;
             --shadow-premium: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
@@ -38,12 +38,22 @@
         }
 
         header {
-            background: var(--burgundy);
-            padding: 1rem 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: sticky;
+            background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 50%, var(--burgundy-dark) 100%);
+            padding: 0.8rem 0;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
             top: 0;
-            z-index: 1000;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+            pointer-events: none;
         }
 
         .navbar {
@@ -55,9 +65,85 @@
             align-items: center;
         }
 
-        .logo img {
-            height: 60px;
-            width: auto;
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tagline {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            font-family: 'Outfit', sans-serif;
+            white-space: nowrap;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .live-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 50px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .live-pulse {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
+            }
+
+            100% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
+        }
+
+        /* Admin Nav Bar */
+        .admin-nav {
+            background: white;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-border);
+            position: sticky;
+            top: 0;
+            z-index: 999;
         }
 
         .nav-links {
@@ -66,21 +152,25 @@
         }
 
         .nav-btn {
-            color: white;
+            color: var(--text-dark);
             text-decoration: none;
             font-weight: 600;
-            padding: 8px 16px;
+            padding: 8px 20px;
             border-radius: 50px;
             transition: all 0.2s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--gray-light);
+            color: var(--accent-red);
         }
 
         .nav-btn.active {
-            background: white;
+            background: #fee2e2;
             color: var(--accent-red);
         }
 
@@ -211,9 +301,12 @@
             overflow: hidden;
             box-shadow: var(--shadow-premium);
             position: relative;
-            padding: 24px;
-            transition: all 0.3s;
+            padding: 30px 35px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             border: 1px solid var(--gray-border);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .ticket-card::before {
@@ -327,35 +420,153 @@
             background: var(--gray-border);
         }
 
+        /* User-facing card styles */
+        .bus-type-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+
+        .route-visual {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px 30px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .loc-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .arrow-icon {
+            color: var(--accent-red);
+            font-size: 1.5rem;
+            animation: arrow-slide 2s infinite ease-in-out;
+        }
+
+        @keyframes arrow-slide {
+            0% {
+                transform: translateX(-8px);
+                opacity: 0;
+            }
+
+            50% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(8px);
+                opacity: 0;
+            }
+        }
+
         .price-grid {
             display: grid;
-            border: 1px solid var(--gray-border);
-            border-radius: 10px;
-            overflow: hidden;
-            background: var(--white);
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            width: 100%;
         }
 
-        .grid-cell {
-            padding: 10px 5px;
+        .price-box {
+            background: #fff;
+            padding: 14px 12px;
+            border-radius: 14px;
+            border: 1px solid #e9ecef;
             text-align: center;
-            font-size: 0.75rem;
-            border-right: 1px solid var(--gray-border);
-            border-bottom: 1px solid var(--gray-border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
         }
 
-        .grid-cell:last-child {
-            border-right: none;
+        .price-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            border-color: var(--accent-red);
         }
 
-        .cell-type {
-            font-weight: 600;
+        .price-box .s-icon {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .price-box:hover .s-icon {
+            transform: scale(1.1);
+        }
+
+        .price-box .icon-sleeper {
+            color: #8b5cf6;
+        }
+
+        .price-box .icon-seater {
+            color: #3b82f6;
+        }
+
+        .price-box .icon-default {
+            color: var(--accent-red);
+        }
+
+        .s-type {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 900;
             color: var(--text-muted);
-            background: var(--gray-light);
+            text-transform: uppercase;
+            margin-bottom: 2px;
         }
 
-        .cell-value {
+        .s-price {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-red);
+        }
+
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .info-badge {
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
             font-weight: 800;
             color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-badge i {
+            color: var(--accent-red);
+            font-size: 0.75rem;
         }
 
         .bus-icon {
@@ -420,16 +631,33 @@
 <body>
     <header>
         <div class="navbar">
-            <a href="/owner" class="logo">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tick My Bus">
-            </a>
-            <div class="nav-links">
-                <a href="/owner" class="nav-btn">Dashboard</a>
-                <a href="/add-bus" class="nav-btn active">Add Journey</a>
-                <a href="/buses/" class="nav-btn">Manage Fleet</a>
+            <div class="logo-group">
+                <a href="/owner" class="logo">
+                    <img src="{{ url_for('static', filename='images/TMB.jpeg') }}" alt="Tick My Bus"
+                        style="height: 45px; width: auto;">
+                </a>
+            </div>
+            <span class="tagline">Tick My Bus – Today Special Bus Offers </span>
+            <div class="live-badge">
+                <div class="live-pulse"></div>
+                <span>LIVE VIEW PARITY</span>
             </div>
         </div>
     </header>
+
+    <nav class="admin-nav">
+        <div class="navbar">
+            <div class="nav-links">
+                <a href="/owner" class="nav-btn"><i class="fas fa-th-large"></i> Dashboard</a>
+                <a href="/add-bus" class="nav-btn active"><i class="fas fa-plus-circle"></i> Add Journey</a>
+                <a href="/buses/" class="nav-btn"><i class="fas fa-bus"></i> Manage Fleet</a>
+            </div>
+            <div
+                style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+                <i class="fas fa-lock"></i> Secured Admin Session
+            </div>
+        </div>
+    </nav>
 
     <main class="main-content">
         <section class="form-section">
@@ -500,6 +728,12 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Booked Tickets</label>
+                    <input type="number" name="booked_seats" id="inp_booked" class="form-control" value="0"
+                        placeholder="Number of tickets already booked" required oninput="updatePreview()">
+                </div>
+
                 <div class="price-label-row" style="margin-top: 30px;">SET SEAT PRICING (INR)</div>
 
                 <!-- Seat Legend Section -->
@@ -564,36 +798,27 @@
             <div class="preview-header">Live Offer Card Preview</div>
 
             <div class="ticket-card" id="preview-card">
-                <div class="card-header">
-                    <div class="route-info">
-                        <span class="start-label">STARTING FROM</span>
-                        <div class="price-main" id="prev_min_price">₹0</div>
-                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">
-                            <i class="far fa-calendar-alt"></i> <span id="prev_date">Date</span>
-                        </div>
+                <h2 class="bus-type-title" id="prev_bus_type">Service Type</h2>
+
+                <div class="route-visual">
+                    <span class="loc-name" id="prev_from">FROM</span>
+                    <i class="fas fa-long-arrow-alt-right arrow-icon"></i>
+                    <span class="loc-name" id="prev_to">TO</span>
+                </div>
+
+                <div class="badge-row">
+                    <div class="info-badge">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span id="prev_booked">0 Tickets Booked</span>
                     </div>
-                    <div class="bus-icon">
-                        <i class="fas fa-bus-alt"></i>
+                    <div class="info-badge" style="background: #fffbeb; border: 1px solid #fef3c7;">
+                        <i class="fas fa-shield-alt" style="color: #d97706;"></i>
+                        <span style="color: #92400e;">Verified Pricing</span>
                     </div>
                 </div>
 
-                <div class="time-row">
-                    <div class="time-box">
-                        <span class="time-label">Departure</span>
-                        <span class="time-val" id="prev_start">--:--</span>
-                        <span class="time-label" id="prev_from">From</span>
-                    </div>
-                    <div class="timeline"></div>
-                    <div class="time-box">
-                        <span class="time-label">Arrival</span>
-                        <span class="time-val" id="prev_reach">--:--</span>
-                        <span class="time-label" id="prev_to">To</span>
-                    </div>
-                </div>
-
-                <div class="price-label-row">PRICE</div>
-                <div id="prev_price_grid" class="price-grid" style="grid-template-columns: repeat(4, 1fr);">
-                    <!-- Cells injected by JS -->
+                <div id="prev_price_grid" class="price-grid">
+                    <!-- Price boxes injected by JS -->
                 </div>
             </div>
 
@@ -606,58 +831,65 @@
     </main>
 
     <script>
+        function getSeatIcon(seatType) {
+            const type = seatType.toUpperCase();
+            if (type.includes('USS') || type.includes('LSS') || type.includes('UDS') || type.includes('LDS')) {
+                return { icon: 'fa-bed', class: 'icon-sleeper' };
+            } else if (type.includes('SS') || type.includes('SEATER')) {
+                return { icon: 'fa-chair', class: 'icon-seater' };
+            } else {
+                return { icon: 'fa-users', class: 'icon-default' };
+            }
+        }
+
         function updatePreview() {
             // Basic Info
             const name = document.getElementById('inp_bus_name').value || 'Bus Name';
-            const date = document.getElementById('inp_date').value || 'Date';
-            const from = document.getElementById('inp_from').value || 'From';
-            const to = document.getElementById('inp_to').value || 'To';
-            const start = document.getElementById('inp_start').value || '--:--';
-            const reach = document.getElementById('inp_reach').value || '--:--';
+            const busType = document.getElementById('inp_bus_type').value || 'Service Type';
+            const from = document.getElementById('inp_from').value || 'FROM';
+            const to = document.getElementById('inp_to').value || 'TO';
+            const booked = document.getElementById('inp_booked').value || '0';
 
-            document.getElementById('prev_date').innerText = date;
-            document.getElementById('prev_from').innerText = from;
-            document.getElementById('prev_to').innerText = to;
-            document.getElementById('prev_start').innerText = start.slice(0, 5);
-            document.getElementById('prev_reach').innerText = reach.slice(0, 5);
+            // Update bus type title
+            document.getElementById('prev_bus_type').innerText = busType;
+            
+            // Update locations
+            document.getElementById('prev_from').innerText = from.toUpperCase();
+            document.getElementById('prev_to').innerText = to.toUpperCase();
+            
+            // Update booked tickets
+            document.getElementById('prev_booked').innerText = booked + ' Tickets Booked';
 
             // Seat Prices
             const seatTypes = ['USS', 'LSS', 'UDS', 'LDS', 'SS'];
             const activeSeats = [];
-            let minPrice = Infinity;
 
             seatTypes.forEach(type => {
                 const val = parseInt(document.getElementById('p_' + type.toLowerCase()).value) || 0;
                 if (val > 0) {
                     activeSeats.push({ type, price: val });
-                    if (val < minPrice) minPrice = val;
                 }
             });
 
-            if (minPrice === Infinity) minPrice = 0;
-            document.getElementById('prev_min_price').innerText = '₹' + minPrice;
-
-            // Update Grid
+            // Update Price Grid with icon boxes
             const grid = document.getElementById('prev_price_grid');
-            const colCount = activeSeats.length || 1;
-            grid.style.gridTemplateColumns = `repeat(${colCount}, 1fr)`;
-
-            let typeRow = '';
-            let valRow = '';
-
+            
             if (activeSeats.length === 0) {
-                typeRow = '<div class="grid-cell cell-type" style="border-right:none">-</div>';
-                valRow = '<div class="grid-cell cell-value" style="border-right:none; border-bottom:none">-</div>';
+                grid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted);">No seat prices set</div>';
             } else {
-                activeSeats.forEach((s, idx) => {
-                    const isLast = idx === activeSeats.length - 1;
-                    const border = isLast ? 'style="border-right:none"' : '';
-                    typeRow += `<div class="grid-cell cell-type" ${border}>${s.type}</div>`;
-                    valRow += `<div class="grid-cell cell-value" ${border} style="${isLast ? 'border-right:none;' : ''} border-bottom:none">₹${s.price}</div>`;
-                });
+                const priceBoxes = activeSeats.map(s => {
+                    const iconData = getSeatIcon(s.type);
+                    return `
+                        <div class="price-box">
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}"></i>
+                            <span class="s-type">${s.type}</span>
+                            <span class="s-price">₹${s.price}</span>
+                        </div>
+                    `;
+                }).join('');
+                
+                grid.innerHTML = priceBoxes;
             }
-
-            grid.innerHTML = typeRow + valRow;
         }
 
         // Initialize

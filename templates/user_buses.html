@@ -4,90 +4,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Offers | Tick My Bus</title>
+    <title>Live Offers Dashboard | Tick My Bus</title>
+    <!-- Modern & Impactful Fonts -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/TMB.jpeg') }}">
+
     <style>
         :root {
-            --burgundy: #e52023cc;
-            --burgundy-light: #e52023cc;
-            --burgundy-dark: #e52023cc;
-            --gray-light: #f8f9fa;
-            --gray-border: #eef1f4;
-            --text-dark: #1a1a1b;
-            --text-muted: #6b7280;
-            --accent-red: #cc2124;
-            --white: #ffffff;
-            --shadow-premium: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --burgundy: #ce1212;
+            --burgundy-light: #ee1d23;
+            --burgundy-dark: #810000;
+            --bg-page: #f8f9fa;
+            --card-white: #ffffff;
+            --text-dark: #1a1c1e;
+            --text-muted: #64748b;
+            --accent-yellow: #ffda79;
+            --shadow-premium: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+            --glass: rgba(255, 255, 255, 0.9);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            user-select: none;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #f1f3f6;
+            background-color: var(--bg-page);
             color: var(--text-dark);
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Premium Header */
+        /* Fixed Premium Header */
         header {
             background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 50%, var(--burgundy-dark) 100%);
-            padding: 0.8rem 0;
+            padding: 10px 0;
             position: relative;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
-            pointer-events: none;
+            z-index: 1000;
+            flex-shrink: 0;
         }
 
         .navbar {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo-group {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .logo {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo i {
-            font-size: 1.4rem;
-            color: #fff;
-            opacity: 0.9;
+        .logo-group img {
+            height: 44px;
+            border-radius: 8px;
+            display: block;
         }
 
         .tagline {
@@ -96,505 +74,86 @@
             top: 50%;
             transform: translate(-50%, -50%);
             color: white;
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 800;
-            letter-spacing: 0.5px;
             font-family: 'Outfit', sans-serif;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             white-space: nowrap;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        @media (max-width: 768px) {
-            .tagline {
-                display: none;
-            }
-        }
-
-        .live-badge {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(8px);
-            padding: 8px 16px;
-            border-radius: 50px;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .live-pulse {
-            width: 8px;
-            height: 8px;
-            background: #4ade80;
-            border-radius: 50%;
-            animation: pulse-ring 1.5s infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% {
-                transform: scale(0.8);
-                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
-            }
-
-            70% {
-                transform: scale(1);
-                box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
-            }
-
-            100% {
-                transform: scale(0.8);
-                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
-            }
-        }
-
-        /* Video Player */
-        .video-container {
-            max-width: 1200px;
-            margin: 20px auto 0;
-            padding: 0 20px;
-            overflow: hidden;
-            border-radius: 24px;
-        }
-
-        .video-wrapper {
-            width: 100%;
-            background: #000;
-            line-height: 0;
-            box-shadow: var(--shadow-premium);
-            border: 1px solid var(--gray-border);
-            border-radius: 24px;
-            overflow: hidden;
-        }
-
-        .video-wrapper video {
-            width: 100%;
-            max-height: 280px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .volume-control {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.2s;
-        }
-
-        .volume-control:hover {
-            background: var(--accent-red);
-            transform: scale(1.1);
-        }
-
-        .main-content {
-            max-width: 1400px;
-            margin: 15px auto;
-            padding: 0 15px;
-        }
-
-        @media (min-width: 992px) {
-            .main-content {
-                display: flex;
-                gap: 20px;
-                align-items: flex-start;
-            }
-
-            #bus-grid {
-                flex: 2;
-            }
-
-            .video-container {
-                flex: 1;
-                margin-top: 0 !important;
-                position: sticky;
-                top: 15px;
-            }
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        /* Ticket Card */
-        .ticket-card {
-            background: var(--white);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: var(--shadow-premium);
-            position: relative;
-            padding: 24px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid var(--gray-border);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-height: 250px;
-            justify-content: space-between;
-        }
-
-        .ticket-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 30%;
-            bottom: 30%;
-            width: 5px;
-            background: var(--accent-red);
-            border-radius: 0 4px 4px 0;
-        }
-
-        .ticket-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .route-info {
-            flex: 1;
-        }
-
-        .start-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
-            display: block;
-        }
-
-        .price-main {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--accent-red);
-            margin-bottom: 8px;
-        }
-
-        /* Time Row Styling */
-        .time-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 15px 0;
-            padding: 12px 0;
-            border-top: 1px dashed var(--gray-border);
-            border-bottom: 1px dashed var(--gray-border);
-        }
-
-        .time-box {
-            text-align: center;
-        }
-
-        .time-val {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            display: block;
-        }
-
-        .time-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .timeline {
-            flex: 1;
-            margin: 0 15px;
-            height: 1px;
-            background: var(--gray-border);
-            position: relative;
-        }
-
-        .timeline::after {
-            content: '\f1b9';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 0 8px;
-            color: var(--accent-red);
-            font-size: 0.8rem;
-        }
-
-        .route-path {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text-dark);
-            margin-top: 10px;
-        }
-
-        .route-path i {
-            color: var(--accent-red);
-            font-size: 0.7rem;
-        }
-
-        .bus-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gray-light);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-red);
-            font-size: 1.1rem;
-            border: 1px solid var(--gray-border);
-        }
-
-        .route-display {
+        .live-status {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--text-dark);
-            background: var(--gray-light);
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--gray-border);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 15px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .route-display i,
-        .route-separator {
-            color: var(--accent-red);
-            font-size: 0.8rem;
+        .date-text {
+            color: var(--accent-yellow);
             font-weight: 800;
-        }
-
-        .price-range {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--accent-red);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .price-label-mini {
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Price Grid Table */
-        .price-label-row {
-            text-align: center;
-            font-size: 0.65rem;
-            font-weight: 800;
-            color: var(--text-muted);
-            margin: 15px 0 8px;
-            letter-spacing: 1.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .price-label-row::after,
-        .price-label-row::before {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--gray-border);
-        }
-
-        .price-grid {
-            display: grid;
-            border: 1px solid var(--gray-border);
-            border-radius: 10px;
-            overflow: hidden;
-            background: var(--white);
-        }
-
-        .grid-cell {
-            padding: 10px 5px;
-            text-align: center;
-            font-size: 0.75rem;
-            border-right: 1px solid var(--gray-border);
-            border-bottom: 1px solid var(--gray-border);
-        }
-
-        .grid-cell:last-child {
-            border-right: none;
-        }
-
-        .cell-type {
-            font-weight: 600;
-            color: var(--text-muted);
-            background: var(--gray-light);
-        }
-
-        .cell-value {
-            font-weight: 800;
-            color: var(--text-dark);
-        }
-
-        /* Seat Legend */
-        .seat-legend {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            border: 1px solid var(--gray-border);
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
             font-size: 0.85rem;
-            color: var(--text-dark);
-            font-weight: 600;
-        }
-
-        .legend-code {
-            background: var(--gray-light);
-            padding: 2px 8px;
-            border-radius: 6px;
-            color: var(--accent-red);
-            font-weight: 800;
-            border: 1px solid var(--gray-border);
-            font-size: 0.75rem;
-        }
-
-        /* Booking Footer Bar */
-        .booking-footer-bar {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            width: auto;
-            max-width: 90%;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 12px 25px;
-            border-radius: 60px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            z-index: 1000;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            animation-delay: 1.5s;
-        }
-
-        @keyframes slideUp {
-            to {
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-
-        .booking-label {
-            display: flex;
-            flex-direction: column;
-            white-space: nowrap;
-        }
-
-        .label-top {
-            font-size: 0.65rem;
-            font-weight: 800;
-            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .label-main {
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--text-dark);
+        .clock-text {
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            padding-left: 12px;
+            min-width: 85px;
         }
 
-        .contact-actions {
+        /* Main Dashboard Structure */
+        .dashboard-main {
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 20px;
+            padding: 20px;
+            height: 65vh;
+            /* Increased height for larger card */
+            flex-shrink: 0;
+        }
+
+        /* Stage Area */
+        .stage-area {
+            position: relative;
+            overflow: hidden;
             display: flex;
-            gap: 12px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5px 0;
+            width: 100%;
+            height: clamp(450px, 65vh, 800px);
+            /* Stable height for large content */
         }
 
-        .action-btn {
-            height: 48px;
-            padding: 0 20px;
-            border-radius: 50px;
+        .stage-badge {
+            position: absolute;
+            top: 5px;
+            left: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            position: relative;
+            gap: 6px;
+            font-weight: 900;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--burgundy);
+            letter-spacing: 1.5px;
+            z-index: 10;
         }
 
-        .btn-call {
-            background: var(--burgundy);
-            color: white;
-            box-shadow: 0 5px 15px rgba(229, 32, 35, 0.3);
-        }
-
-        .btn-call:hover {
-            background: var(--accent-red);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(229, 32, 35, 0.4);
-        }
-
-        .btn-whatsapp {
-            background: #25d366;
-            color: white;
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-        }
-
-        .btn-whatsapp:hover {
-            background: #22c35e;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
-        }
-
-        .status-dot {
+        .pulse-dot {
             width: 8px;
             height: 8px;
-            background: #4ade80;
+            background: var(--burgundy);
             border-radius: 50%;
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            border: 2px solid white;
             animation: pulse-dot 1.5s infinite;
         }
 
@@ -605,7 +164,7 @@
             }
 
             50% {
-                transform: scale(1.5);
+                transform: scale(1.3);
                 opacity: 0.5;
             }
 
@@ -615,26 +174,579 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .booking-footer-bar {
-                width: 95%;
-                padding: 10px 15px;
-                gap: 10px;
-                bottom: 20px;
+        /* Simplified Slide Indicator */
+        .slide-indicator {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--burgundy);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 5;
+        }
+
+        /* Offer List Overview (Bottom) - Professional Upgrades */
+        .offer-directory-scroll {
+            position: fixed;
+            bottom: 105px;
+            left: 0;
+            width: 100%;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+            z-index: 50;
+        }
+
+        .offer-directory-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .dir-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.9) 100%);
+            backdrop-filter: blur(25px);
+            padding: 10px 16px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            min-width: 190px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dir-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(206, 18, 18, 0.03) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dir-item:hover::before {
+            opacity: 1;
+        }
+
+        .dir-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12), 0 3px 8px rgba(0, 0, 0, 0.06);
+            border-color: rgba(206, 18, 18, 0.2);
+        }
+
+        .dir-badge {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: var(--text-muted);
+            padding: 5px 10px;
+            border-radius: 9px;
+            font-size: 0.65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .dir-route {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            flex: 1;
+            white-space: nowrap;
+        }
+
+        .dir-route span {
+            white-space: nowrap;
+        }
+
+        .dir-route .route-to {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: lowercase;
+            margin: 0 4px;
+        }
+
+        .dir-item.active .dir-route .route-to {
+            color: rgba(206, 18, 18, 0.7);
+        }
+
+        .dir-item.active {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%) !important;
+            transform: translateY(-8px) scale(1.08);
+            box-shadow: 0 20px 45px rgba(206, 18, 18, 0.25), 0 8px 16px rgba(206, 18, 18, 0.15), 0 0 0 3px rgba(206, 18, 18, 0.1);
+            border-color: var(--burgundy);
+            z-index: 60;
+        }
+
+        .dir-item.active::before {
+            opacity: 1;
+            background: linear-gradient(135deg, transparent 0%, rgba(206, 18, 18, 0.08) 100%);
+        }
+
+        .dir-item.active .dir-badge {
+            background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-light) 100%);
+            color: white;
+            border-color: var(--burgundy);
+            box-shadow: 0 4px 12px rgba(206, 18, 18, 0.3);
+        }
+
+        .dir-item.active .dir-route {
+            color: var(--burgundy);
+        }
+
+        /* Bus Card Gallery Animation - The whole card slides */
+        .bus-card {
+            width: 100%;
+            max-width: 850px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), 0 0 20px rgba(181, 16, 45, 0.05);
+            /* Premium Glow */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 40px 45px 30px 45px;
+            /* Increased padding */
+            animation: gallerySlide 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            will-change: transform, opacity;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        @keyframes gallerySlide {
+            from {
+                transform: translateX(120%);
+                /* Start completely off-screen */
+                opacity: 0.5;
             }
 
-            .label-main {
-                font-size: 0.85rem;
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .bus-type-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            /* Increased Size */
+            font-weight: 900;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1;
+            letter-spacing: -1.5px;
+        }
+
+        .route-visual {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            /* Premium Gradient */
+            padding: 20px 40px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .loc-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            /* Increased Size */
+            font-weight: 900;
+            color: var(--brand-red);
+            /* Brand Color Emphasis */
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .arrow-icon {
+            color: var(--burgundy);
+            font-size: 2rem;
+            animation: arrow-slide 2s infinite ease-in-out;
+        }
+
+        @keyframes arrow-slide {
+            0% {
+                transform: translateX(-10px);
+                opacity: 0;
+            }
+
+            50% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(10px);
+                opacity: 0;
+            }
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 12px;
+            width: 100%;
+        }
+
+        .price-box {
+            background: #fff;
+            padding: 16px 15px;
+            /* Increased padding */
+            border-radius: 16px;
+            border: 1px solid #e9ecef;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .price-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            border-color: var(--burgundy);
+        }
+
+        .price-box .s-icon {
+            font-size: 2rem;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .price-box:hover .s-icon {
+            transform: scale(1.1);
+        }
+
+        /* Icon colors based on seat type */
+        .price-box .icon-sleeper {
+            color: #8b5cf6;
+        }
+
+        .price-box .icon-seater {
+            color: #3b82f6;
+        }
+
+        .price-box .icon-default {
+            color: var(--burgundy);
+        }
+
+        .s-type {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .s-price {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            /* Increased Size */
+            font-weight: 800;
+            color: var(--burgundy);
+        }
+
+        /* Sidebar - Multi Video */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .video-reel {
+            flex: 1;
+            overflow-y: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-right: 0;
+            border-radius: 20px;
+        }
+
+        .video-reel::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .video-reel::-webkit-scrollbar-thumb {
+            background: #ced4da;
+            border-radius: 10px;
+        }
+
+        .video-card {
+            width: 100%;
+            height: calc(50% - 7.5px);
+            background: black;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mute-toggle {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            z-index: 10;
+        }
+
+        /* Separate Floating App Promo */
+        .app-promo {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            padding: 15px 20px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 2000;
+            transition: 0.3s ease;
+        }
+
+        .app-promo:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .app-icon {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--burgundy);
+            font-size: 1.3rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .app-info h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-dark);
+        }
+
+        .app-info p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Booking Footer */
+        .footer-action-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            padding: 12px 40px;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            z-index: 2000;
+        }
+
+        .info-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.65rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .info-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        .btn-call {
+            background: var(--burgundy);
+            color: white;
+        }
+
+        .btn-wa {
+            background: #25d366;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sync Timer - Centered Inside Circle */
+        .sync-tracker {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 50%;
+            z-index: 100;
+        }
+
+        .timer-circle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 40px;
+            height: 40px;
+            transform: rotate(-90deg);
+        }
+
+        #countdown {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            color: var(--burgundy);
+            font-size: 0.85rem;
+            line-height: 1;
+            position: relative;
+            z-index: 101;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: #eee;
+            stroke-width: 4;
+        }
+
+        .circle-bar {
+            fill: none;
+            stroke: var(--burgundy);
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 113;
+            stroke-dashoffset: 113;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        @media (max-width: 1024px) {
+            body {
+                height: auto;
+                overflow: auto;
+            }
+
+            .tagline {
+                display: none;
+            }
+
+            .dashboard-main {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .footer-action-bar {
+                width: 95%;
+                flex-direction: column;
+                gap: 15px;
+                border-radius: 25px;
+                bottom: 10px;
+                position: relative;
+                left: 0;
+                transform: none;
+                margin: 20px auto;
+            }
+
+            .btn-group {
+                width: 100%;
             }
 
             .action-btn {
-                padding: 0 12px;
-                height: 42px;
-                font-size: 0.8rem;
+                flex: 1;
+                justify-content: center;
             }
 
-            .btn-text {
-                display: none;
+            .app-promo {
+                position: relative;
+                bottom: 0;
+                right: 0;
+                margin: 0 auto 20px auto;
+                width: calc(100% - 40px);
+                justify-content: center;
+                backdrop-filter: blur(15px);
             }
         }
     </style>
@@ -644,151 +756,250 @@
     <header>
         <div class="navbar">
             <div class="logo-group">
-                <a href="/" class="logo">
-                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tick My Bus"
-                        style="height: 45px; width: auto;">
-                </a>
+                <a href="/"><img src="{{ url_for('static', filename='images/TMB.jpeg') }}" alt="TMB"></a>
             </div>
-            <span class="tagline">Tick My Bus – Hot Bus Offers</span>
-            <div class="live-badge">
-                <div class="live-pulse"></div>
-                <span>LIVE OFFERS</span>
+            <div class="tagline">Tick My Bus – Today Special Bus Offers</div>
+            <div class="live-status">
+                <div id="live-date" class="date-text">JAN 10, 2026</div>
+                <div id="live-clock" class="clock-text">00:00:00</div>
             </div>
         </div>
     </header>
 
-
-
-    <main class="main-content">
-        <!-- Seat Legend Section Removed for Single Screen View -->
-
-        <div id="bus-grid" class="grid-container">
-            <div style="text-align:center; grid-column: 1/-1; padding: 50px 0;">
-                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--burgundy); opacity: 0.3;"></i>
-                <p
-                    style="margin-top:15px; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; font-size: 0.8rem;">
-                    SYNCING OFFERS...</p>
+    <main class="dashboard-main">
+        <!-- Center Stage -->
+        <div class="stage-area">
+            <div class="stage-badge">
+                <div class="pulse-dot"></div>
+                Live Offer Spotlight
             </div>
-        </div>
 
-        {% if videos %}
-        <div class="video-container" style="margin-top: 0px; display: flex; flex-direction: column; gap: 20px;">
-            {% for video in videos %}
-            <div class="video-wrapper"
-                style="position: relative; border-radius: 20px; box-shadow: var(--shadow-premium);">
-                <video class="promo-video" autoplay muted loop playsinline onclick="toggleMute(this)">
-                    <source src="{{ url_for('static', filename='videos/' + video.filename) }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <div class="volume-control" onclick="toggleMute(this.previousElementSibling)"
-                    style="width: 40px; height: 40px; font-size: 1rem;">
-                    <i class="fas fa-volume-mute"></i>
+            <div id="bus-content" style="width: 100%;">
+                <!-- Dynamic Content Loading -->
+                <div style="text-align: center; opacity: 0.5;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 20px;"></i>
+                    <p style="font-weight: 800; letter-spacing: 2px;">SYNCING LIVE DATA...</p>
                 </div>
             </div>
-            {% endfor %}
+
         </div>
-        {% endif %}
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="video-reel">
+                {% if videos %}
+                {% for video in videos %}
+                <div class="video-card">
+                    <video class="promo-video" autoplay muted loop playsinline>
+                        <source src="{{ url_for('static', filename='videos/' + video.filename) }}" type="video/mp4">
+                    </video>
+                    <div class="mute-toggle" onclick="toggleMute(this)">
+                        <i class="fas fa-volume-mute"></i>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+        </aside>
     </main>
 
-    <!-- Impressive Booking Bar -->
-    <div class="booking-footer-bar">
-        <div class="booking-label">
-            <span class="label-top">Enquiry Now</span>
-            <span class="label-main">90927-48488</span>
+    <!-- Offer Directory (Dynamic) -->
+    <div id="offer-directory" class="offer-directory-scroll"></div>
+
+    <!-- Floating Footer -->
+    <div class="footer-action-bar">
+        <div class="info-col">
+            <span class="info-label">Booking Enquiries</span>
+            <span class="info-value">90927-48488</span>
         </div>
-        <div class="contact-actions">
+        <div class="btn-group">
             <a href="tel:9092748488" class="action-btn btn-call">
-                <i class="fas fa-phone-alt"></i>
-                <span class="btn-text">Call Now</span>
+                <i class="fas fa-phone-alt"></i> CALL NOW
             </a>
-            <a href="https://wa.me/919092748488" class="action-btn btn-whatsapp" target="_blank">
-                <i class="fab fa-whatsapp"></i>
-                <span class="btn-text">WhatsApp</span>
-                <div class="status-dot"></div>
+            <a href="https://wa.me/919092748488" target="_blank" class="action-btn btn-wa">
+                <i class="fab fa-whatsapp"></i> WHATSAPP
             </a>
         </div>
     </div>
 
-    <script>
-        let previousData = {};
+    <!-- Separate App Promo -->
+    <div class="app-promo">
+        <div class="app-icon">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+        <div class="app-info">
+            <h4>Tick My Bus</h4>
+            <p>Coming soon in real world use.</p>
+        </div>
+    </div>
 
-        async function fetchUpdates() {
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yyyy = now.getFullYear();
+            document.getElementById('live-date').textContent = `${dd}-${mm}-${yyyy}`;
+            document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-IN', { hour12: false });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        let buses = [];
+        let currentIndex = 0;
+        let timerSeconds = 10;
+
+        async function init() {
             try {
                 const response = await fetch('/api/buses');
-                const buses = await response.json();
-                renderBuses(buses);
-            } catch (error) {
-                console.error('Update failed:', error);
+                buses = await response.json();
+                if (buses.length > 0) {
+                    displayBus(buses[currentIndex], currentIndex);
+                    runTimer();
+                }
+            } catch (err) {
+                console.error("Failed to fetch buses:", err);
             }
         }
 
-        function renderBuses(buses) {
-            const container = document.getElementById('bus-grid');
-            let html = '';
+        function displayBus(bus, index) {
+            const content = document.getElementById('bus-content');
 
-            buses.forEach(bus => {
-                const seats = (bus.seats || []).filter(s => s.price > 0);
-                const currentMin = bus.min_price || 0;
-                const currentMax = seats.length > 0 ? Math.max(...seats.map(s => s.price)) : currentMin;
+            // Icon mapping function
+            function getSeatIcon(seatType) {
+                const type = seatType.toUpperCase();
+                if (type.includes('USS') || type.includes('LSS') || type.includes('UDS') || type.includes('LDS')) {
+                    return { icon: 'fa-bed', class: 'icon-sleeper' };
+                } else if (type.includes('SS') || type.includes('SEATER')) {
+                    return { icon: 'fa-chair', class: 'icon-seater' };
+                } else {
+                    return { icon: 'fa-users', class: 'icon-default' };
+                }
+            }
 
-                const priceChanged = previousData[bus.id] && previousData[bus.id] !== `${currentMin}-${currentMax}`;
-                const flashClass = priceChanged ? 'price-flash' : '';
-                previousData[bus.id] = `${currentMin}-${currentMax}`;
+            const seatHtml = (bus.seats || []).map(s => {
+                const iconData = getSeatIcon(s.seat_type);
+                return `
+                <div class="price-box">
+                    <i class="fas ${iconData.icon} s-icon ${iconData.class}"></i>
+                    <span class="s-type">${s.seat_type}</span>
+                    <span class="s-price">₹${s.price}</span>
+                </div>
+            `;
+            }).join('');
 
-                html += `
-                    <div class="ticket-card" id="bus-${bus.id}">
-                        <div class="card-header">
-                            <div class="bus-info">
-                                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 2px;">
-                                    ${bus.bus_type}
-                                </div>
-                                <div style="font-size: 0.7rem; color: var(--accent-red); font-weight: 600;">
-                                    <i class="far fa-calendar-alt"></i> ${bus.journey_date}
-                                </div>
-                            </div>
-                            <div class="bus-icon">
-                                <i class="fas fa-bus-alt"></i>
-                            </div>
+            content.innerHTML = `
+                <div class="bus-card">
+                    <div class="slide-indicator">OFFER ${index + 1}</div>
+                    
+                    <div class="sync-tracker">
+                        <div id="countdown">10</div>
+                        <svg class="timer-circle">
+                            <circle class="circle-bg" cx="20" cy="20" r="18"></circle>
+                            <circle id="timer-bar" class="circle-bar" cx="20" cy="20" r="18"></circle>
+                        </svg>
+                    </div>
+
+                    <h2 class="bus-type-title">${bus.bus_type}</h2>
+                    <div class="route-visual">
+                        <span class="loc-name">${bus.from_location}</span>
+                        <i class="fas fa-long-arrow-alt-right arrow-icon"></i>
+                        <span class="loc-name">${bus.to_location}</span>
+                    </div>
+
+                    <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 15px;">
+                        <div style="background: #f1f5f9; padding: 6px 15px; border-radius: 50px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-ticket-alt" style="color: var(--burgundy); font-size: 0.8rem;"></i>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px;">${bus.booked_seats} Tickets Booked</span>
                         </div>
-
-                        <div class="route-display">
-                            <span>${bus.from_location}</span>
-                            <span class="route-separator">TO</span>
-                            <span>${bus.to_location}</span>
-                        </div>
-
-                        <div class="price-info">
-                            <span class="price-label-mini">OFFER PRICE RANGE</span>
-                            <div class="price-range ${flashClass}">
-                                <span>₹${currentMin}</span>
-                                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">to</span>
-                                <span>₹${currentMax}</span>
-                            </div>
+                        <div style="background: #fffbeb; padding: 6px 15px; border-radius: 50px; display: flex; align-items: center; gap: 8px; border: 1px solid #fef3c7;">
+                            <i class="fas fa-shield-alt" style="color: #d97706; font-size: 0.8rem;"></i>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;">Verified Pricing</span>
                         </div>
                     </div>
-                `;
-            });
 
-            container.innerHTML = html;
+                    <div class="price-grid">
+                        ${seatHtml}
+                    </div>
+                </div>
+            `;
+
+            updateDirectory(index);
         }
 
-        function toggleMute(video) {
-            const btn = video.nextElementSibling;
-            const icon = btn.querySelector('i');
+        function renderDirectory() {
+            const dir = document.getElementById('offer-directory');
+            dir.innerHTML = buses.map((bus, idx) => `
+                <div class="dir-item" id="dir-${idx}" onclick="jumpToOffer(${idx})">
+                    <div class="dir-badge">OFFER ${idx + 1}</div>
+                    <div class="dir-route">
+                        <span>${bus.from_location.split(' ')[0]}</span>
+                        <span class="route-to">to</span>
+                        <span>${bus.to_location.split(' ')[0]}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-            if (video.muted) {
-                video.muted = false;
-                icon.className = 'fas fa-volume-up';
-                btn.style.background = 'var(--accent-red)';
-            } else {
-                video.muted = true;
-                icon.className = 'fas fa-volume-mute';
-                btn.style.background = 'rgba(0, 0, 0, 0.6)';
+        function updateDirectory(index) {
+            document.querySelectorAll('.dir-item').forEach(el => el.classList.remove('active'));
+            const active = document.getElementById(`dir-${index}`);
+            if (active) active.classList.add('active');
+        }
+
+        function jumpToOffer(index) {
+            currentIndex = index;
+            timerSeconds = 10;
+            displayBus(buses[currentIndex], currentIndex);
+        }
+
+        function runTimer() {
+            setInterval(() => {
+                const bar = document.getElementById('timer-bar');
+                const text = document.getElementById('countdown');
+
+                timerSeconds--;
+                const offset = 113 - (113 * (10 - timerSeconds) / 10);
+                if (bar) bar.style.strokeDashoffset = offset;
+                if (text) text.textContent = timerSeconds;
+
+                if (timerSeconds <= 0) {
+                    timerSeconds = 10;
+                    currentIndex = (currentIndex + 1) % buses.length;
+                    displayBus(buses[currentIndex], currentIndex);
+                }
+            }, 1000);
+        }
+
+        function toggleMute(btn) {
+            const video = btn.previousElementSibling;
+            video.muted = !video.muted;
+            btn.innerHTML = video.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+        }
+
+        // Initialize with directory
+        async function init() {
+            try {
+                const response = await fetch('/api/buses');
+                buses = await response.json();
+                if (buses.length > 0) {
+                    renderDirectory();
+                    displayBus(buses[currentIndex], currentIndex);
+                    runTimer();
+                }
+            } catch (err) {
+                console.error("Failed to fetch buses:", err);
             }
         }
 
-        fetchUpdates();
-        setInterval(fetchUpdates, 30000);
+        init();
+        // Refresh data every 2 minutes
+        setInterval(async () => {
+            const response = await fetch('/api/buses');
+            buses = await response.json();
+            renderDirectory();
+        }, 120000);
     </script>
 </body>
 
