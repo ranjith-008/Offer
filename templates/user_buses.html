@@ -213,18 +213,22 @@
         .dir-item {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.9) 100%);
             backdrop-filter: blur(25px);
-            padding: 10px 16px;
+            padding: 10px 14px;
             border-radius: 14px;
             display: flex;
+            flex-direction: row;
             align-items: center;
+            justify-content: flex-start;
             gap: 12px;
             border: 2px solid rgba(255, 255, 255, 0.6);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
             cursor: pointer;
-            min-width: 190px;
+            min-width: 200px;
+            width: auto;
             position: relative;
             overflow: hidden;
+            text-align: left;
         }
 
         .dir-item::before {
@@ -252,39 +256,50 @@
         .dir-badge {
             background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             color: var(--text-muted);
-            padding: 5px 10px;
+            padding: 8px 8px;
             border-radius: 9px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 0.7px;
+            letter-spacing: 0.5px;
             border: 1px solid #cbd5e1;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
+            text-align: center;
+            min-width: 60px;
+            /* Ensure alignment */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
         }
 
         .dir-route {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
+            gap: 2px;
+            font-size: 0.9rem;
             font-weight: 800;
             color: var(--text-dark);
             text-transform: uppercase;
             flex: 1;
-            white-space: nowrap;
+            width: 100%;
+            line-height: 1.2;
         }
 
         .dir-route span {
-            white-space: nowrap;
+            white-space: normal;
+            display: block;
         }
 
         .dir-route .route-to {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             color: var(--text-muted);
-            text-transform: lowercase;
-            margin: 0 4px;
+            text-transform: uppercase;
+            margin: 2px 0;
+            letter-spacing: 1px;
         }
 
         .dir-item.active .dir-route .route-to {
@@ -849,9 +864,14 @@
         let buses = [];
         let currentIndex = 0;
         let timerSeconds = 10;
+        let globalStats = { total_booked: 0, savings_per_ticket: 0 };
 
         async function init() {
             try {
+                // Fetch Global Stats First
+                const statsRes = await fetch('/api/global-stats');
+                globalStats = await statsRes.json();
+
                 const response = await fetch('/api/buses');
                 buses = await response.json();
                 if (buses.length > 0) {
@@ -859,7 +879,7 @@
                     runTimer();
                 }
             } catch (err) {
-                console.error("Failed to fetch buses:", err);
+                console.error("Failed to fetch data:", err);
             }
         }
 
@@ -869,20 +889,67 @@
             // Icon mapping function
             function getSeatIcon(seatType) {
                 const type = seatType.toUpperCase();
-                if (type.includes('USS') || type.includes('LSS') || type.includes('UDS') || type.includes('LDS')) {
-                    return { icon: 'fa-bed', class: 'icon-sleeper' };
-                } else if (type.includes('SS') || type.includes('SEATER')) {
-                    return { icon: 'fa-chair', class: 'icon-seater' };
-                } else {
-                    return { icon: 'fa-users', class: 'icon-default' };
+
+                // Double Sleeper Check (UDS, LDS, or explicit DOUBLE SLEEPER)
+                if (type.includes('UDS') || type.includes('LDS') || (type.includes('DOUBLE') && type.includes('SLEEPER'))) {
+                    return { icon: 'fa-bed', class: 'icon-sleeper', count: 2 };
+                }
+                // Single Sleeper Check
+                else if (type.includes('USS') || type.includes('LSS') || type.includes('SLEEPER')) {
+                    return { icon: 'fa-bed', class: 'icon-sleeper', count: 1 };
+                }
+                // Seater Check
+                else if (type.includes('SS') || type.includes('SEATER')) {
+                    return { icon: 'fa-chair', class: 'icon-seater', count: 1 };
+                }
+                // Default
+                else {
+                    return { icon: 'fa-users', class: 'icon-default', count: 1 };
                 }
             }
 
             const seatHtml = (bus.seats || []).map(s => {
                 const iconData = getSeatIcon(s.seat_type);
+
+                let iconDisplay = `<i class="fas ${iconData.icon} s-icon ${iconData.class}"></i>`;
+
+                if (iconData.count === 2) {
+                    // Double Bed Visual: Two overlapping beds
+                    iconDisplay = `
+                        <div style="display: flex; justify-content: center; align-items: center; height: 32px;">
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="font-size: 1.5rem; margin-right: -8px;"></i>
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="font-size: 1.5rem; margin-left: -5px; transform: scaleX(-1);"></i>
+                        </div>
+                    `;
+                    // Note: Included scaleX(-1) on second bed for a "head-to-head" or symmetrical look, 
+                    // or just remove transform if standard overlap is preferred. 
+                    // User said "two benticon", likely "two bed icon". 
+                    // Let's stick to simple overlap without flipping to avoid confusion if icon is directional.
+                    iconDisplay = `
+                        <div style="display: flex; justify-content: center; align-items: center; position: relative; width: 40px; margin: 0 auto; height: 35px;">
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="position: absolute; left: 2px;"></i>
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="position: absolute; right: 2px; opacity: 0.9;"></i>
+                        </div>
+                    `;
+                    // Simplified double icon approach
+                    iconDisplay = `
+                        <div style="position: relative; display: inline-block; width: 35px; height: 30px; margin-bottom: 5px;">
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="position: absolute; left: -2px; top: 0; font-size: 1.6rem;"></i>
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="position: absolute; left: 8px; top: -3px; font-size: 1.6rem; color: #7c3aed;"></i>
+                        </div>
+                    `;
+                    // Cleanest Double Icon
+                    iconDisplay = `
+                        <div style="display: flex; justify-content: center; gap: 2px; margin-bottom: 4px;">
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="font-size: 1.4rem;"></i>
+                            <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="font-size: 1.4rem;"></i>
+                        </div>
+                    `;
+                }
+
                 return `
                 <div class="price-box">
-                    <i class="fas ${iconData.icon} s-icon ${iconData.class}"></i>
+                    ${iconDisplay}
                     <span class="s-type">${s.seat_type}</span>
                     <span class="s-price">₹${s.price}</span>
                 </div>
@@ -911,11 +978,11 @@
                     <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 15px;">
                         <div style="background: #f1f5f9; padding: 6px 15px; border-radius: 50px; display: flex; align-items: center; gap: 8px;">
                             <i class="fas fa-ticket-alt" style="color: var(--burgundy); font-size: 0.8rem;"></i>
-                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px;">${bus.booked_seats} Tickets Booked</span>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px;">${globalStats.total_booked} Tickets Booked</span>
                         </div>
                         <div style="background: #fffbeb; padding: 6px 15px; border-radius: 50px; display: flex; align-items: center; gap: 8px; border: 1px solid #fef3c7;">
-                            <i class="fas fa-shield-alt" style="color: #d97706; font-size: 0.8rem;"></i>
-                            <span style="font-size: 0.75rem; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;">Verified Pricing</span>
+                            <i class="fas fa-wallet" style="color: #d97706; font-size: 0.8rem;"></i>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;">User Saved ₹${(globalStats.total_booked * globalStats.savings_per_ticket).toLocaleString()}</span>
                         </div>
                     </div>
 
@@ -934,9 +1001,9 @@
                 <div class="dir-item" id="dir-${idx}" onclick="jumpToOffer(${idx})">
                     <div class="dir-badge">OFFER ${idx + 1}</div>
                     <div class="dir-route">
-                        <span>${bus.from_location.split(' ')[0]}</span>
-                        <span class="route-to">to</span>
-                        <span>${bus.to_location.split(' ')[0]}</span>
+                        <span>${bus.from_location}</span>
+                        <span class="route-to">TO</span>
+                        <span>${bus.to_location}</span>
                     </div>
                 </div>
             `).join('');
@@ -978,9 +1045,13 @@
             btn.innerHTML = video.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
         }
 
-        // Initialize with directory
+        // Initialize
         async function init() {
             try {
+                // Fetch Global Stats First
+                const statsRes = await fetch('/api/global-stats');
+                globalStats = await statsRes.json();
+
                 const response = await fetch('/api/buses');
                 buses = await response.json();
                 if (buses.length > 0) {
@@ -989,13 +1060,16 @@
                     runTimer();
                 }
             } catch (err) {
-                console.error("Failed to fetch buses:", err);
+                console.error("Failed to fetch data:", err);
             }
         }
 
         init();
         // Refresh data every 2 minutes
         setInterval(async () => {
+            const statsRes = await fetch('/api/global-stats');
+            globalStats = await statsRes.json();
+
             const response = await fetch('/api/buses');
             buses = await response.json();
             renderDirectory();

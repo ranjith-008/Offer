@@ -35,3 +35,11 @@ class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+
+class GlobalSettings(db.Model):
+    __tablename__ = 'global_settings'
+
+    id = db.Column(db.Integer, primary_key=True)
+    total_booked_tickets = db.Column(db.Integer, default=0)
+    savings_per_ticket = db.Column(db.Integer, default=0)

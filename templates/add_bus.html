@@ -728,11 +728,6 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Booked Tickets</label>
-                    <input type="number" name="booked_seats" id="inp_booked" class="form-control" value="0"
-                        placeholder="Number of tickets already booked" required oninput="updatePreview()">
-                </div>
 
                 <div class="price-label-row" style="margin-top: 30px;">SET SEAT PRICING (INR)</div>
 
@@ -848,17 +843,16 @@
             const busType = document.getElementById('inp_bus_type').value || 'Service Type';
             const from = document.getElementById('inp_from').value || 'FROM';
             const to = document.getElementById('inp_to').value || 'TO';
-            const booked = document.getElementById('inp_booked').value || '0';
 
             // Update bus type title
             document.getElementById('prev_bus_type').innerText = busType;
-            
+
             // Update locations
             document.getElementById('prev_from').innerText = from.toUpperCase();
             document.getElementById('prev_to').innerText = to.toUpperCase();
-            
-            // Update booked tickets
-            document.getElementById('prev_booked').innerText = booked + ' Tickets Booked';
+
+            // Booked tickets handled globally, removing preview update
+            // document.getElementById('prev_booked').innerText = booked + ' Tickets Booked';
 
             // Seat Prices
             const seatTypes = ['USS', 'LSS', 'UDS', 'LDS', 'SS'];
@@ -873,7 +867,7 @@
 
             // Update Price Grid with icon boxes
             const grid = document.getElementById('prev_price_grid');
-            
+
             if (activeSeats.length === 0) {
                 grid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted);">No seat prices set</div>';
             } else {
@@ -887,7 +881,7 @@
                         </div>
                     `;
                 }).join('');
-                
+
                 grid.innerHTML = priceBoxes;
             }
         }

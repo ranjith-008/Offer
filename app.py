@@ -1,11 +1,14 @@
-from flask import Flask, jsonify
-from models import db
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
+import os
+from werkzeug.utils import secure_filename
+from models import db, Bus, BusSeat, Video, GlobalSettings
 
 app = Flask(__name__)
 app.secret_key = "TMB"
 ADMIN_SECRET_KEY = "TMB"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://aimuniverss_user:Sabari08@localhost/offer_management'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://aimuniverss_user:Sabari08@localhost/offer_management'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:sabari08@localhost/offer_management'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -13,11 +16,13 @@ db.init_app(app)
 # Ensure tables are created
 with app.app_context():
     db.create_all()
+    
+    # Initialize Global Settings if not exists
+    if not GlobalSettings.query.first():
+        db.session.add(GlobalSettings(total_booked_tickets=0, savings_per_ticket=0))
+        db.session.commit()
 
-from flask import render_template, request, redirect, url_for, flash
-import os
-from werkzeug.utils import secure_filename
-from models import Bus, BusSeat, Video, db
+
 
 UPLOAD_FOLDER = 'static/videos'
 ALLOWED_EXTENSIONS = {'mp4', 'mov', 'avi', 'mkv'}
@@ -31,7 +36,24 @@ def allowed_file(filename):
 
 @app.route('/owner')
 def owner_home():
-    return render_template('home.html')
+    global_stats = GlobalSettings.query.first()
+    return render_template('home.html', global_stats=global_stats)
+
+@app.route('/update-global-stats', methods=['POST'])
+def update_global_stats():
+    admin_key = request.form.get('admin_key')
+    if admin_key != ADMIN_SECRET_KEY:
+        flash("Invalid admin secret key!", "danger")
+        return redirect('/owner')
+
+    stats = GlobalSettings.query.first()
+    if stats:
+        stats.total_booked_tickets = request.form.get('total_booked_tickets', 0)
+        stats.savings_per_ticket = request.form.get('savings_per_ticket', 0)
+        db.session.commit()
+        flash("Global statistics updated successfully!", "success")
+    
+    return redirect('/owner')
 
 #create bus offers
 @app.route('/add-bus', methods=['GET', 'POST'])
@@ -50,8 +72,7 @@ def add_bus():
             to_location=request.form['to_location'],
             journey_date=request.form['journey_date'],
             start_time=request.form['start_time'],
-            reach_time=request.form['reach_time'],
-            booked_seats=request.form.get('booked_seats', 0)
+            reach_time=request.form['reach_time']
         )
         db.session.add(bus)
         db.session.commit()   # VERY IMPORTANT
@@ -101,7 +122,6 @@ def edit_bus(id):
         bus.journey_date = request.form['journey_date']
         bus.start_time = request.form['start_time']
         bus.reach_time = request.form['reach_time']
-        bus.booked_seats = request.form.get('booked_seats', 0)
 
         # update seat prices
         for seat in seats:
@@ -241,6 +261,15 @@ def api_buses():
             'min_price': seats[0]['price'] if seats else 0
         })
     return jsonify(bus_list)
+
+
+@app.route('/api/global-stats')
+def api_global_stats():
+    stats = GlobalSettings.query.first()
+    return jsonify({
+        'total_booked': stats.total_booked_tickets if stats else 0,
+        'savings_per_ticket': stats.savings_per_ticket if stats else 0
+    })
 
 
 if __name__ == '__main__':
