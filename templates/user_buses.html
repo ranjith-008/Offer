@@ -908,53 +908,55 @@
                 }
             }
 
-            const seatHtml = (bus.seats || []).map(s => {
-                const iconData = getSeatIcon(s.seat_type);
+            const seatHtml = (bus.seats || [])
+                .filter(s => s.price > 0)
+                .map(s => {
+                    const iconData = getSeatIcon(s.seat_type);
 
-                let iconDisplay = `<i class="fas ${iconData.icon} s-icon ${iconData.class}"></i>`;
+                    let iconDisplay = `<i class="fas ${iconData.icon} s-icon ${iconData.class}"></i>`;
 
-                if (iconData.count === 2) {
-                    // Double Bed Visual: Two overlapping beds
-                    iconDisplay = `
+                    if (iconData.count === 2) {
+                        // Double Bed Visual: Two overlapping beds
+                        iconDisplay = `
                         <div style="display: flex; justify-content: center; align-items: center; height: 32px;">
                             <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="font-size: 1.5rem; margin-right: -8px;"></i>
                             <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="font-size: 1.5rem; margin-left: -5px; transform: scaleX(-1);"></i>
                         </div>
                     `;
-                    // Note: Included scaleX(-1) on second bed for a "head-to-head" or symmetrical look, 
-                    // or just remove transform if standard overlap is preferred. 
-                    // User said "two benticon", likely "two bed icon". 
-                    // Let's stick to simple overlap without flipping to avoid confusion if icon is directional.
-                    iconDisplay = `
+                        // Note: Included scaleX(-1) on second bed for a "head-to-head" or symmetrical look, 
+                        // or just remove transform if standard overlap is preferred. 
+                        // User said "two benticon", likely "two bed icon". 
+                        // Let's stick to simple overlap without flipping to avoid confusion if icon is directional.
+                        iconDisplay = `
                         <div style="display: flex; justify-content: center; align-items: center; position: relative; width: 40px; margin: 0 auto; height: 35px;">
                             <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="position: absolute; left: 2px;"></i>
                             <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="position: absolute; right: 2px; opacity: 0.9;"></i>
                         </div>
                     `;
-                    // Simplified double icon approach
-                    iconDisplay = `
+                        // Simplified double icon approach
+                        iconDisplay = `
                         <div style="position: relative; display: inline-block; width: 35px; height: 30px; margin-bottom: 5px;">
                             <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="position: absolute; left: -2px; top: 0; font-size: 1.6rem;"></i>
                             <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="position: absolute; left: 8px; top: -3px; font-size: 1.6rem; color: #7c3aed;"></i>
                         </div>
                     `;
-                    // Cleanest Double Icon
-                    iconDisplay = `
+                        // Cleanest Double Icon
+                        iconDisplay = `
                         <div style="display: flex; justify-content: center; gap: 2px; margin-bottom: 4px;">
                             <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="font-size: 1.4rem;"></i>
                             <i class="fas ${iconData.icon} s-icon ${iconData.class}" style="font-size: 1.4rem;"></i>
                         </div>
                     `;
-                }
+                    }
 
-                return `
+                    return `
                 <div class="price-box">
                     ${iconDisplay}
                     <span class="s-type">${s.seat_type}</span>
                     <span class="s-price">₹${s.price}</span>
                 </div>
             `;
-            }).join('');
+                }).join('');
 
             content.innerHTML = `
                 <div class="bus-card">
