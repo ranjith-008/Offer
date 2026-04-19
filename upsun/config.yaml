@@ -1,0 +1,21 @@
+# Upsun configuration, generated using AI at: 2026-04-19T17:46:41.421Z
+# AI can make mistakes. Please modify this file to suit your needs.
+applications:
+  app:
+    type: python:3.14
+
+    hooks:
+      build: |
+        set -ex
+        pip install -r requirements.txt
+        # Export DATABASE_URL for runtime environment if needed
+        echo >> .environment 'export DATABASE_URL="$DB_SCHEME://$DB_USERNAME:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_PATH"'
+
+    web:
+      commands:
+        start: python app.py
+
+routes:
+  https://{default}/:
+    type: upstream
+    upstream: app:http
