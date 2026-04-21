@@ -8,7 +8,7 @@ app.secret_key = "TMB"
 ADMIN_SECRET_KEY = "TMB"
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://aimuniverss_user:Sabari08@localhost/offer_management'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:sabari08@localhost/offer_management'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:ZNISCGoelVhglruNxeQhJwxRPCpCvuZC@mysql.railway.internal:3306/railway'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
