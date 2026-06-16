@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request, redirect, url_for, f
 import os
 from werkzeug.utils import secure_filename
 from models import db, Bus, BusSeat, Video, GlobalSettings
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "TMB"
@@ -71,10 +72,17 @@ def add_bus():
             bus_type=request.form['bus_type'],
             from_location=request.form['from_location'],
             to_location=request.form['to_location'],
-            journey_date=request.form['journey_date'],
-            start_time=request.form['start_time'],
-            reach_time=request.form['reach_time']
-        )
+            journey_date=datetime.strptime(request.form['journey_date'], "%Y-%m-%d").date(),
+           start_time=datetime.strptime(
+        request.form['start_time'],
+        "%H:%M"
+    ).time(),
+
+    reach_time=datetime.strptime(
+        request.form['reach_time'],
+        "%H:%M"
+    ).time()
+)
         db.session.add(bus)
         db.session.commit()   # VERY IMPORTANT
 
